@@ -1,6 +1,6 @@
 [package]
 name = "bevy_ios_safearea"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
 license = "MIT"
 authors = ["extrawurst <mail@rusticorn.com>"]
@@ -27,20 +27,20 @@ android-native-activity = ["bevy_winit/android-native-activity"]
 android-game-activity = ["bevy_winit/android-game-activity"]
 
 [dependencies]
-bevy_ecs = {version = "0.16"}
-bevy_app = {version = "0.16"}
-bevy_reflect = {version = "0.16"}
+bevy_ecs = {version = "0.17"}
+bevy_app = {version = "0.17"}
+bevy_reflect = {version = "0.17"}
 
 [target.'cfg(target_os = "ios")'.dependencies]
-bevy_window = {version = "0.16"}
-bevy_winit = {version = "0.16"}
-bevy_log = {version = "0.16"}
+bevy_window = {version = "0.17"}
+bevy_winit = {version = "0.17"}
+bevy_log = {version = "0.17"}
 winit = { version = "0.30", default-features = false, features = ["rwh_06"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
-bevy_window = {version = "0.16"}
-bevy_log = {version = "0.16"}
-bevy_winit = {version = "0.16"}
+bevy_log = {version = "0.17"}
+bevy_winit = {version = "0.17"}
+bevy_android = {version = "0.17"}
 jni = "0.21"
 
 [lints.rust]

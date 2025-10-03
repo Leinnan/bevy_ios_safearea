@@ -4,7 +4,7 @@ use bevy_ecs::{
     resource::Resource,
     system::{Res, SystemParam},
 };
-use bevy_reflect::Reflect;
+use bevy_reflect::{Reflect, prelude::ReflectDefault};
 /// Resource providing iOS device safe area insets.
 /// It is created and added only when there are insets on the running device.
 /// It is recommended to access it from systems by using [`IosSafeArea`] SystemParam.
@@ -18,8 +18,8 @@ use bevy_reflect::Reflect;
 ///     let safe_area_top = safe_area.top();
 /// }
 /// ```
-#[derive(Resource, Clone, Debug, Default, Reflect)]
-#[reflect(Resource)]
+#[derive(Resource, Clone, Copy, Debug, Default, Reflect)]
+#[reflect(Resource, Default, Debug)]
 pub struct IosSafeAreaResource {
     /// The inset from the top of the screen.
     ///
