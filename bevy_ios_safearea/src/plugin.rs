@@ -113,7 +113,6 @@ fn init(mut commands: bevy_ecs::system::Commands) {
 
 #[cfg(target_os = "ios")]
 fn init(
-    windows: bevy_ecs::system::NonSend<bevy_winit::WinitWindows>,
     window: bevy_ecs::system::Single<
         bevy_ecs::entity::Entity,
         bevy_ecs::query::With<bevy_window::PrimaryWindow>,
@@ -124,31 +123,34 @@ fn init(
     use winit::raw_window_handle::HasWindowHandle;
 
     tracing::debug!("safe area updating");
+    bevy_winit::WINIT_WINDOWS.with_borrow(|winit_windows| {
+        let raw_window = winit_windows
+            .get_window(*window)
+            .expect("invalid window handle");
+        if let Ok(handle) = raw_window.window_handle() {
+            if let winit::raw_window_handle::RawWindowHandle::UiKit(handle) = handle.as_raw() {
+                let ui_view: *mut std::ffi::c_void = handle.ui_view.as_ptr();
 
-    let raw_window = windows.get_window(*window).expect("invalid window handle");
-    if let Ok(handle) = raw_window.window_handle() {
-        if let winit::raw_window_handle::RawWindowHandle::UiKit(handle) = handle.as_raw() {
-            let ui_view: *mut std::ffi::c_void = handle.ui_view.as_ptr();
+                let (top, bottom, left, right) = unsafe {
+                    (
+                        crate::native::swift_safearea_top(ui_view),
+                        crate::native::swift_safearea_bottom(ui_view),
+                        crate::native::swift_safearea_left(ui_view),
+                        crate::native::swift_safearea_right(ui_view),
+                    )
+                };
 
-            let (top, bottom, left, right) = unsafe {
-                (
-                    crate::native::swift_safearea_top(ui_view),
-                    crate::native::swift_safearea_bottom(ui_view),
-                    crate::native::swift_safearea_left(ui_view),
-                    crate::native::swift_safearea_right(ui_view),
-                )
-            };
+                let safe_area = IosSafeAreaResource {
+                    top,
+                    bottom,
+                    left,
+                    right,
+                };
 
-            let safe_area = IosSafeAreaResource {
-                top,
-                bottom,
-                left,
-                right,
-            };
+                tracing::debug!("safe area updated: {:?}", safe_area);
 
-            tracing::debug!("safe area updated: {:?}", safe_area);
-
-            commands.insert_resource(safe_area);
+                commands.insert_resource(safe_area);
+            }
         }
-    }
+    });
 }
