@@ -85,7 +85,7 @@ impl Plugin for IosSafeAreaPlugin {
         app.register_type::<IosSafeAreaResource>();
         #[cfg(any(target_os = "ios", target_os = "android"))]
         {
-            app.add_systems(bevy_app::PostStartup, init);
+            app.add_systems(bevy_app::Startup, init);
         }
     }
 }
