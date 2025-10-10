@@ -123,7 +123,7 @@ fn init(
     use winit::raw_window_handle::HasWindowHandle;
 
     tracing::debug!("safe area updating");
-    bevy_winit::WINIT_WINDOWS.with_borrow(|winit_windows| {
+    if let Some(safe_area) = bevy_winit::WINIT_WINDOWS.with_borrow(|winit_windows| {
         let raw_window = winit_windows
             .get_window(*window)
             .expect("invalid window handle");
@@ -140,17 +140,18 @@ fn init(
                     )
                 };
 
-                let safe_area = IosSafeAreaResource {
+                return Some(IosSafeAreaResource {
                     top,
                     bottom,
                     left,
                     right,
-                };
-
-                tracing::debug!("safe area updated: {:?}", safe_area);
-
-                commands.insert_resource(safe_area);
+                });
             }
         }
-    });
+        None
+    }) {
+        tracing::debug!("safe area updated: {:?}", safe_area);
+
+        commands.insert_resource(safe_area);
+    }
 }
