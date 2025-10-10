@@ -85,7 +85,7 @@ impl Plugin for IosSafeAreaPlugin {
         app.register_type::<IosSafeAreaResource>();
         #[cfg(any(target_os = "ios", target_os = "android"))]
         {
-            app.add_systems(bevy_app::Startup, init);
+            app.add_systems(bevy_app::PostStartup, init);
         }
     }
 }
@@ -118,6 +118,7 @@ fn init(
         bevy_ecs::query::With<bevy_window::PrimaryWindow>,
     >,
     mut commands: bevy_ecs::system::Commands,
+    _non_send_marker: bevy_ecs::system::NonSendMarker,
 ) {
     use bevy_log::tracing;
     use winit::raw_window_handle::HasWindowHandle;
