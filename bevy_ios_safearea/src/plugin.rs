@@ -82,6 +82,7 @@ pub struct IosSafeAreaPlugin;
 
 impl Plugin for IosSafeAreaPlugin {
     fn build(&self, app: &mut App) {
+        bevy_log::warn!("safe area creating");
         app.register_type::<IosSafeAreaResource>();
         #[cfg(any(target_os = "ios", target_os = "android"))]
         {
@@ -92,7 +93,6 @@ impl Plugin for IosSafeAreaPlugin {
 
 #[cfg(target_os = "android")]
 fn init(mut commands: bevy_ecs::system::Commands) {
-    bevy_log::warn!("safe area updating");
     let insets = if cfg!(any(
         feature = "android-native-activity",
         feature = "android-game-activity"

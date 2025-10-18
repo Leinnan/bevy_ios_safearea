@@ -30,16 +30,15 @@ android-game-activity = ["bevy_winit/android-game-activity"]
 bevy_ecs = {version = "0.16"}
 bevy_app = {version = "0.16"}
 bevy_reflect = {version = "0.16"}
+bevy_log = {version = "0.16"}
 
 [target.'cfg(target_os = "ios")'.dependencies]
 bevy_window = {version = "0.16"}
 bevy_winit = {version = "0.16"}
-bevy_log = {version = "0.16"}
 winit = { version = "0.30", default-features = false, features = ["rwh_06"] }
 
 [target.'cfg(target_os = "android")'.dependencies]
 bevy_window = {version = "0.16"}
-bevy_log = {version = "0.16"}
 bevy_winit = {version = "0.16"}
 jni = "0.21"
 
