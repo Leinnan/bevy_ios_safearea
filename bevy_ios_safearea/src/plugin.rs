@@ -82,7 +82,7 @@ pub struct IosSafeAreaPlugin;
 
 impl Plugin for IosSafeAreaPlugin {
     fn build(&self, app: &mut App) {
-        bevy_log::warn!("safe area creating");
+        bevy_log::error!("safe area creating");
         app.register_type::<IosSafeAreaResource>();
         #[cfg(target_os = "ios")]
         {
@@ -97,20 +97,21 @@ impl Plugin for IosSafeAreaPlugin {
 
 #[cfg(target_os = "android")]
 fn init(mut commands: bevy_ecs::system::Commands) {
+    bevy_log::error!("safe area reading");
     let insets = if cfg!(any(
         feature = "android-native-activity",
         feature = "android-game-activity"
     )) {
         crate::android::try_get_safe_area()
     } else {
-        bevy_log::warn!("No feature for android is enabled. No insets read.");
+        bevy_log::error!("No feature for android is enabled. No insets read.");
         None
     };
     if let Some(insets) = insets {
-        bevy_log::warn!("safe area updated: {:?}", &insets);
+        bevy_log::error!("safe area updated: {:?}", &insets);
         commands.insert_resource(insets);
     } else {
-        bevy_log::warn!("safe area- no insets got");
+        bevy_log::error!("safe area- no insets got");
     }
 }
 
