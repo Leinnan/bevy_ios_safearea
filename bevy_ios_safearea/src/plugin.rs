@@ -92,21 +92,21 @@ impl Plugin for IosSafeAreaPlugin {
 
 #[cfg(target_os = "android")]
 fn init(mut commands: bevy_ecs::system::Commands) {
+    bevy_log::warn!("safe area updating");
     let insets = if cfg!(any(
         feature = "android-native-activity",
         feature = "android-game-activity"
     )) {
-        bevy_log::debug!("safe area updating");
         crate::android::try_get_safe_area()
     } else {
-        bevy_log::debug!("No feature for android is enabled. No insets read.");
+        bevy_log::warn!("No feature for android is enabled. No insets read.");
         None
     };
     if let Some(insets) = insets {
-        bevy_log::debug!("safe area updated: {:?}", &insets);
+        bevy_log::warn!("safe area updated: {:?}", &insets);
         commands.insert_resource(insets);
     } else {
-        bevy_log::debug!("safe area- no insets got");
+        bevy_log::warn!("safe area- no insets got");
     }
 }
 
