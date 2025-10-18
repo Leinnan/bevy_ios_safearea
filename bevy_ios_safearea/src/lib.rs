@@ -4,7 +4,7 @@
     target_os = "android",
     any(feature = "android-native-activity", feature = "android-game-activity")
 ))]
-mod android;
+pub mod android;
 #[cfg(target_os = "ios")]
 mod native;
 mod plugin;
