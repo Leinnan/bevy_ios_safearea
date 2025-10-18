@@ -1,7 +1,7 @@
 use crate::IosSafeAreaResource;
 
 /// Get the safe area insets for Android.
-pub(crate) fn try_get_safe_area() -> Option<IosSafeAreaResource> {
+pub fn try_get_safe_area() -> Option<IosSafeAreaResource> {
     use jni::{
         objects::JObject,
         sys::{_jobject, JNIInvokeInterface_},
