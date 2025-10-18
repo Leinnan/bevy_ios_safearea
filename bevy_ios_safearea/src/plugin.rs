@@ -84,9 +84,13 @@ impl Plugin for IosSafeAreaPlugin {
     fn build(&self, app: &mut App) {
         bevy_log::warn!("safe area creating");
         app.register_type::<IosSafeAreaResource>();
-        #[cfg(any(target_os = "ios", target_os = "android"))]
+        #[cfg(target_os = "ios")]
         {
             app.add_systems(bevy_app::Startup, init);
+        }
+        #[cfg(target_os = "android")]
+        {
+            app.add_systems(bevy_app::PostStartup, init);
         }
     }
 }
