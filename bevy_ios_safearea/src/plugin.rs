@@ -83,10 +83,27 @@ pub struct IosSafeAreaPlugin;
 impl Plugin for IosSafeAreaPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<IosSafeAreaResource>();
-        #[cfg(any(target_os = "ios", target_os = "android"))]
+        #[cfg(target_os = "ios")]
         {
             app.add_systems(bevy_app::Startup, init);
         }
+        #[cfg(target_os = "android")]
+        {
+            app.add_systems(bevy_app::Update, on_application_running_check);
+        }
+    }
+}
+
+#[cfg(target_os = "android")]
+fn on_application_running_check(
+    mut app_lifecycle_reader: bevy_ecs::prelude::MessageReader<bevy_window::AppLifecycle>,
+    mut cmd: bevy_ecs::system::Commands,
+) {
+    if app_lifecycle_reader
+        .read()
+        .any(|e| matches!(e, bevy_window::AppLifecycle::Running))
+    {
+        cmd.run_system_cached(init);
     }
 }
 
