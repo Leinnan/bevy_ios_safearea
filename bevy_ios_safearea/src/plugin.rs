@@ -119,7 +119,14 @@ fn on_application_running(
 }
 
 #[cfg(target_os = "android")]
-fn init(mut commands: bevy_ecs::system::Commands) {
+fn init(
+    mut commands: bevy_ecs::system::Commands,
+    window: bevy_ecs::system::Query<
+        &bevy_window::Window,
+        bevy_ecs::query::With<bevy_window::PrimaryWindow>,
+    >,
+) {
+    let window_scale = window.single().map_or_else(|_| 1.0, |w| w.scale_factor());
     use bevy_log::tracing;
 
     let insets = if cfg!(any(
@@ -131,7 +138,11 @@ fn init(mut commands: bevy_ecs::system::Commands) {
     } else {
         None
     };
-    if let Some(insets) = insets {
+    if let Some(mut insets) = insets {
+        insets.top /= window_scale;
+        insets.bottom /= window_scale;
+        insets.left /= window_scale;
+        insets.right /= window_scale;
         tracing::debug!("safe area updated: {:?}", &insets);
         commands.insert_resource(insets);
     } else {
