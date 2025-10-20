@@ -67,6 +67,20 @@ impl IosSafeArea<'_> {
     }
 }
 
+/// Helper trait for updating insets.
+pub trait SafeAreaExt {
+    /// Force refresh of insets.
+    fn update_safe_area(&mut self) -> &mut Self;
+}
+
+impl SafeAreaExt for bevy_ecs::system::Commands<'_, '_> {
+    fn update_safe_area(&mut self) -> &mut Self {
+        #[cfg(any(target_os = "android", target_os = "ios"))]
+        self.run_system_cached(init);
+        self
+    }
+}
+
 /// Plugin to query iOS device safe area insets.
 ///
 /// # Example
@@ -89,22 +103,19 @@ impl Plugin for IosSafeAreaPlugin {
         }
         #[cfg(target_os = "android")]
         {
-            app.add_systems(bevy_app::Update, on_application_running_check);
+            use bevy_ecs::schedule::IntoScheduleConfigs;
+            app.add_systems(bevy_app::Update, init.run_if(on_application_running));
         }
     }
 }
 
 #[cfg(target_os = "android")]
-fn on_application_running_check(
+fn on_application_running(
     mut app_lifecycle_reader: bevy_ecs::prelude::MessageReader<bevy_window::AppLifecycle>,
-    mut cmd: bevy_ecs::system::Commands,
-) {
-    if app_lifecycle_reader
+) -> bool {
+    app_lifecycle_reader
         .read()
         .any(|e| matches!(e, bevy_window::AppLifecycle::Running))
-    {
-        cmd.run_system_cached(init);
-    }
 }
 
 #[cfg(target_os = "android")]
